@@ -115,7 +115,25 @@ module.exports = {
     }
   },
   // remove a reaction
+  // /api/thoughts/:thoughtId/reactions/:reactionId
   async deleteReaction(req, res) {
-    res.json("will delete reaction");
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: { reactionId: req.params.reactionId } } },
+        { runValidators: true, new: true }
+      );
+
+      //if no thought is found with that id, return a 404 response
+      if (!thought) {
+        return res
+          .status(404)
+          .json({ message: "No thought found under that id!" });
+      }
+
+      res.status(200).json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 };
