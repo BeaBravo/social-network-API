@@ -33,12 +33,34 @@ module.exports = {
     }
   },
   // update user
+  // /api/users/:userId
   async updateUser(req, res) {
-    res.json("will update user");
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      //if no user is found with that id, return a 404 response
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "No user found under that id!" });
+      }
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // delete user
+  // /api/users/:userId
   async deleteUser(req, res) {
-    res.json("will delete user");
+    try {
+      res.json("will delete user");
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // add a new friend
   async addFriend(req, res) {
