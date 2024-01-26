@@ -91,8 +91,28 @@ module.exports = {
     }
   },
   // create a reaction in a single thought
+  // /api/thoughts/:thoughtId/reactions -> body: reactionBody and username
   async createReaction(req, res) {
-    res.json("will create reaction");
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        {
+          _id: req.params.thoughtId,
+        },
+        { $addToSet: { reactions: req.body } },
+        { runValidators: true, new: true }
+      );
+
+      //if no thought is found with that id, return a 404 response
+      if (!thought) {
+        return res
+          .status(404)
+          .json({ message: "No thought found under that id!" });
+      }
+
+      res.status(200).json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // remove a reaction
   async deleteReaction(req, res) {
