@@ -56,8 +56,27 @@ module.exports = {
     }
   },
   // update a thought
+  // /api/thoughts/:thoughtId
   async updateThought(req, res) {
-    res.json("will update thought");
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        {
+          _id: req.params.thoughtId,
+        },
+        { $set: req.body },
+        { new: true }
+      );
+
+      //if no thought is found with that id, return a 404 response
+      if (!thought) {
+        return res
+          .status(404)
+          .json({ message: "No thought found under that id!" });
+      }
+      res.status(200).json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // delete a thought
   async deleteThought(req, res) {
