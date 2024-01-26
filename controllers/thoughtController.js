@@ -80,7 +80,15 @@ module.exports = {
   },
   // delete a thought
   async deleteThought(req, res) {
-    res.json("will delete thought");
+    try {
+      const thought = await Thought.findOneAndDelete({
+        _id: req.params.thoughtId,
+      });
+
+      res.status(200).json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // create a reaction in a single thought
   async createReaction(req, res) {
