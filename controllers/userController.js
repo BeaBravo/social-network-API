@@ -16,14 +16,14 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.params.userId })
         .select("-__v")
-        .lean();
+        .populate("thoughts");
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);
     }
   },
   // create a new user
-  // /api/users -> req.body will need username and email 
+  // /api/users -> req.body will need username and email
   async createUser(req, res) {
     try {
       const user = await User.create(req.body);

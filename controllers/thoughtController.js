@@ -1,7 +1,9 @@
+const { User } = require("../models");
 const Thought = require("../models/Thought");
 
 module.exports = {
   // get all thoughts
+  // /api/thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thought.find();
@@ -11,12 +13,39 @@ module.exports = {
     }
   },
   // get single thoughts by id
+  // /api/thoughts/:thoughtId
   async getSingleThought(req, res) {
-    res.json("will get single thought");
+    try {
+      const thought = await Thought.findOne({
+        _id: req.params.thoughtId,
+      }).select("-__v");
+      res.status(200).json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // create a new thought
+  // /api/thoughts -> req.body will be text and username
   async createThought(req, res) {
-    res.json("will create a thought");
+    try {
+      const thought = await Thought.create(req.body);
+
+      //need to add new thought to the associated user
+      await User.findOneAndUpdate(
+        {
+          username: req.body.username,
+        },
+        {
+          $addToSet: {
+            thoughts: [thought],
+          },
+        }
+      );
+
+      res.status(200).json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // update a thought
   async updateThought(req, res) {
