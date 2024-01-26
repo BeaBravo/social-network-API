@@ -58,6 +58,29 @@ connection.once("open", async () => {
     );
   }
 
+  //add friend ---> learntino is friends with harrypotter
+  await User.findOneAndUpdate(
+    {
+      username: "learntino",
+    },
+    {
+      $addToSet: {
+        friends: [users[1]],
+      },
+    }
+  );
+
+  await User.findOneAndUpdate(
+    {
+      username: "harrypotter",
+    },
+    {
+      $addToSet: {
+        friends: [users[0]],
+      },
+    }
+  );
+
   //console.log to show seeding is done
   console.table(users);
   console.table(thoughts);
