@@ -56,11 +56,11 @@ const createReactions = (int) => {
   return results;
 };
 
-const getRandomThoughts = (int) => {
+const getRandomThoughts = () => {
   const results = [];
-  for (i = 0; i < int; i++) {
+  for (i = 0; i < thoughts.length; i++) {
     results.push({
-      thoughtText: getRandomArrItem(thoughts),
+      thoughtText: thoughts[i],
       username: getRandomArrItem(allUsernames),
       reactions: [...createReactions(2)],
     });
