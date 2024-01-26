@@ -8,10 +8,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      validate: {
-        validator: () => Promise.resolve(false),
-        message: "Email invalid",
-      },
+      // validate: {
+      //   validator: () => Promise.resolve(false),
+      //   message: "Email invalid",
+      // },
     },
     thoughts: [
       {

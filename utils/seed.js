@@ -24,6 +24,9 @@ connection.once("open", async () => {
   //create seed for thoughts
   const thoughts = getRandomThoughts(6);
 
+  //add them to collection
+  const thoughtData = await Thought.collection.insertMany(thoughts);
+  console.log(thoughtData);
   //create seed for users
   const allUsers = getUsers();
   const users = [];
@@ -33,12 +36,12 @@ connection.once("open", async () => {
     users.push({
       username,
       email,
+      // thoughts: [...thoughtData.map({_id} => _id)]
     });
   }
 
-  //insert seeds into collections
+  // insert seeds into collections
   await User.collection.insertMany(users);
-  await Thought.collection.insertMany(thoughts);
 
   //console.log to show seeding is done
   console.table(users);
