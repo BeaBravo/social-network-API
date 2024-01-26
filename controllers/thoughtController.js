@@ -3,7 +3,12 @@ const Thought = require("../models/Thought");
 module.exports = {
   // get all thoughts
   async getThoughts(req, res) {
-    res.json("will get all thoughts");
+    try {
+      const thoughts = await Thought.find();
+      res.status(200).json(thoughts);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
   // get single thoughts by id
   async getSingleThought(req, res) {
