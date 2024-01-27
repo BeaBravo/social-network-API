@@ -16,7 +16,8 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.params.userId })
         .select("-__v")
-        .populate("thoughts");
+        .populate("thoughts")
+        .populate("friends");
 
       //if no user is found response 404
       if (!user) {
@@ -119,7 +120,36 @@ module.exports = {
   // /api/users/:userId/friends/:friendId
   async deleteFriend(req, res) {
     try {
-      res.json("will remove friend");
+      //find first user and remove the friend that matches :friendId
+      const user = await User.findOneAndUpdate(
+        {
+          _id: req.params.userId,
+        },
+        {
+          $pull: {
+            friends: req.params.friendId,
+          },
+        },
+        { new: true }
+      );
+
+      // update the friend to reflect this
+      const friend = await User.findOneAndUpdate(
+        {
+          _id: req.params.friendId,
+        },
+        {
+          $pull: {
+            friends: req.params.userId,
+          },
+        },
+        { runValidators: true, new: true }
+      );
+
+      res.json({
+        message: `${user.username} and ${friend.username} are no longer friends`,
+        users: [user, friend],
+      });
     } catch (err) {
       res.status(500).json(err);
     }
