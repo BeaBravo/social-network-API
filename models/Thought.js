@@ -13,6 +13,9 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: (date) => {
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+      },
     },
     username: {
       type: String,
@@ -21,8 +24,10 @@ const thoughtSchema = new Schema(
     reactions: [Reaction],
   },
   {
+    timestamps: true,
     toJSON: {
       virtuals: true,
+      getters: true,
     },
     id: false,
   }
